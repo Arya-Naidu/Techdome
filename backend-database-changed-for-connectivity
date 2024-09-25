@@ -1,0 +1,18 @@
+const mongoose = require("mongoose");
+
+// Construct the MongoDB connection URI from environment variables
+const dbHost = process.env.DB_HOST || 'localhost'; // Default to localhost if not set
+const dbUser = process.env.DB_USER || 'root';
+const dbPassword = process.env.DB_PASSWORD || '';
+const dbName = process.env.DB_NAME || 'mydatabase';
+
+const mongoURI = `mongodb://${dbUser}:${dbPassword}@${dbHost}:27017/${dbName}`;
+
+// Connect to MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log("Connection established...");
+    })
+    .catch((error) => {
+        console.log("Database connection error:", error);
+    });
