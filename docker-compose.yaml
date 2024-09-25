@@ -1,0 +1,36 @@
+version: '3.8'  # Define the version of Docker Compose
+
+services:
+  # Backend service
+  backend:
+    build: ./Techdome-backend  # Path to the backend directory with the Dockerfile
+    ports:
+      - "5000:5000"  # Map the container's 5000 port to the host's 5000 port
+    environment:
+      - DB_HOST=mongo  # Service name of MongoDB
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=mydatabase
+    depends_on:
+      - mongo  # Ensure backend starts after MongoDB is up
+
+  # Frontend service
+  frontend:
+    build: ./Techdome-frontend  # Path to the frontend directory with the Dockerfile
+    ports:
+      - "3000:3000"  # Map the container's 3000 port to the host's 3000 port
+    depends_on:
+      - backend  # Ensure frontend starts after the backend is up
+    environment:
+      - REACT_APP_BACKEND_URL=http://backend:5000  # Backend URL for frontend
+
+  # MongoDB service
+  mongo:
+    image: mongo:latest  # Use the official MongoDB image
+    ports:
+      - "27017:27017"  # Map the container's 27017 port to the host's 27017 port
+    volumes:
+      - mongo-data:/data/db  # Persist MongoDB data
+
+volumes:
+  mongo-data:  # Named volume for MongoDB data persistence
